@@ -2,20 +2,35 @@
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-10-21
+
 ### Added
-- **feat(cli)**: `--npm` flag on `scan` treats PATH as a project root: it lists
-  the MCP-related dependencies declared in `package.json` and scans every MCP
-  config (`mcp.json` and the other known names) found under `node_modules/`,
-  attributing each result to its owning npm package. A manifest that cannot be
-  parsed is skipped and reported, not fatal. `--deny`, `--fail-on` and the JSON /
-  SARIF / CLI outputs apply to the aggregated result set; SARIF is emitted as a
-  multi-run document. Discovery is filesystem-only (no `npm`/`node`, no network,
-  no manifest execution) (#51)
-- **feat(parser)**: YAML and JavaScript config support in `MCPParser.from_file` — file
-  extension now selects the format: `.yaml`/`.yml` are parsed with a safe YAML loader, and
-  `.js` files are read as a JSON-compatible object literal (`module.exports = { ... }` or
-  `export default { ... }`, never executed). JSON remains the default for unknown extensions
-  and for directory scans (#52)
+- **npm dependency scanning** (`scan --npm`): audits every MCP server a project installs
+  as an npm dependency. Point `scan` at a project root and it reads `package.json`, then
+  scans every MCP config it finds under `node_modules/`, attributing each finding to the
+  package that owns it. SARIF output is a multi-run document. Discovery is
+  filesystem-only: no `npm`, no `node`, no network, no manifest execution.
+- **YAML and JavaScript config parsing** (`MCPParser.from_file`): the extension now
+  selects the format — `.yaml`/`.yml` use a safe YAML loader, `.js` files are read as a
+  JSON-compatible object literal (`module.exports = { ... }` or `export default { ... }`,
+  never executed), and JSON stays the default for unknown extensions and directory scans.
+
+### Changed
+- **The reported version follows the installed distribution.** `mcp_guard.__version__`
+  was a hardcoded string, so `mcp-guard --version` printed a stale version after every
+  bump (0.3.2 install reporting 0.3.1). It now reads
+  `importlib.metadata.version("mcp-guard-py")`, falling back to `0.0.0+unknown` when the
+  distribution is not installed, and tests pin it to `pyproject.toml` [project] version
+  on every supported Python (#117, #118).
+- **CI**: lint (ruff), strict type checking (mypy and pyright) and the test matrix on
+  Python 3.10, 3.11 and 3.12 all run on push and on every pull request.
+
+### Fixed
+- **The package name is `mcp-guard-py`.** The distribution was renamed to match the
+  published PyPI project, so `pip install mcp-guard` was pointing at the wrong name
+  (#116).
+- **README install instructions** now match the published distribution name and the
+  current command set.
 
 ## [0.3.1] - 2026-10-11
 

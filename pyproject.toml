@@ -42,6 +42,9 @@ canary = [
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    # Python 3.10 has no stdlib tomllib (added in 3.11); tests/test_version_pin.py
+    # needs to read pyproject.toml on every supported version.
+    "tomli>=2.0; python_version < '3.11'",
     "ruff>=0.1",
     "mypy>=1.0",
     "pyright>=1.1.400",

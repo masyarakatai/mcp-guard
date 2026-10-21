@@ -7,7 +7,11 @@ import subprocess
 import sys
 
 import pytest
-import tomllib
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10: tomllib arrived in 3.11
+    import tomli as tomllib
 
 import mcp_guard
 

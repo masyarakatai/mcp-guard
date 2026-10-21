@@ -109,6 +109,10 @@ class TestFindMcpDependencies:
         (tmp_path / "package.json").write_text("{not json", encoding="utf-8")
         assert find_mcp_dependencies(tmp_path / "package.json") == []
 
+    def test_invalid_utf8_manifest_is_empty(self, tmp_path: Path) -> None:
+        (tmp_path / "package.json").write_bytes(b'{"dependencies": {"mcp-server": "1.0.0"}\xff}')
+        assert find_mcp_dependencies(tmp_path / "package.json") == []
+
     def test_non_object_manifest_is_empty(self, tmp_path: Path) -> None:
         (tmp_path / "package.json").write_text("[1, 2, 3]", encoding="utf-8")
         assert find_mcp_dependencies(tmp_path / "package.json") == []

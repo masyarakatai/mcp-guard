@@ -62,7 +62,7 @@ def find_mcp_dependencies(package_json: Path) -> list[str]:
     """
     try:
         data: Any = json.loads(package_json.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
         return []
     if not isinstance(data, dict):
         return []

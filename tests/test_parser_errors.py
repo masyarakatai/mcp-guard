@@ -88,3 +88,19 @@ def test_parser_handles_null_fields(tmp_path):
     assert result.capabilities[1].name == "unnamed"
     assert result.capabilities[1].description == "some tool"
 
+
+@pytest.mark.parametrize("field", ["tools", "resources", "prompts"])
+@pytest.mark.parametrize("value", [5, True, {"name": "not-a-list"}, "not-a-list"])
+def test_parser_rejects_non_list_capability_fields(field, value):
+    """Non-list capability fields should raise a clear validation error."""
+    with pytest.raises(ValueError, match=rf"Expected '{field}' to be a list, got"):
+        MCPParser.from_dict({"name": "test-server", field: value})
+
+
+@pytest.mark.parametrize("value", [5, True, {"none": []}, "none"])
+def test_parser_rejects_non_list_security(value):
+    """A capability's security field should not be iterated as an arbitrary value."""
+    with pytest.raises(ValueError, match=r"Expected 'security' to be a list, got"):
+        MCPParser.from_dict(
+            {"name": "test-server", "tools": [{"name": "test-tool", "security": value}]}
+        )

@@ -238,6 +238,15 @@ def as_permission_list(value: Any) -> list[str]:
     )
 
 
+def _as_list(value: Any, field: str) -> list[Any]:
+    """Validate a manifest field that must contain a list when populated."""
+    if not value:
+        return []
+    if isinstance(value, list):
+        return cast("list[Any]", cast(Any, value))
+    raise ValueError(f"Expected '{field}' to be a list, got {type(value).__name__}")
+
+
 def _js_object_literal(text: str) -> str:
     """Extract the JSON-compatible object literal from a JS config body.
 
@@ -420,7 +429,7 @@ class MCPParser:
         capabilities: list[MCPCapability] = []
 
         # Parse tools
-        tools = cast("list[Any]", data.get("tools") or [])
+        tools = _as_list(data.get("tools"), "tools")
         for tool in tools:
             if not isinstance(tool, dict):
                 continue
@@ -429,7 +438,7 @@ class MCPParser:
             )
 
         # Parse resources
-        resources = cast("list[Any]", data.get("resources") or [])
+        resources = _as_list(data.get("resources"), "resources")
         for resource in resources:
             if not isinstance(resource, dict):
                 continue
@@ -438,7 +447,7 @@ class MCPParser:
             )
 
         # Parse prompts
-        prompts = cast("list[Any]", data.get("prompts") or [])
+        prompts = _as_list(data.get("prompts"), "prompts")
         for prompt in prompts:
             if not isinstance(prompt, dict):
                 continue
@@ -527,7 +536,7 @@ class MCPParser:
                 state = "disabled"
         # OpenAPI-style: `security: [{"none": []}]` allows anonymous access,
         # any listed scheme means auth is required.
-        security = cast("list[Any]", data.get("security") or [])
+        security = _as_list(data.get("security"), "security")
         if security:
             # A non-mapping entry is a scheme name this tool does not model:
             # unknown, so it must not be read as an explicit "no auth".

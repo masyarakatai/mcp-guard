@@ -222,7 +222,8 @@ class TestNPMScannerOutput:
     def test_json_aggregate_shape(self, tmp_path: Path) -> None:
         scanner = NPMScanner(self._make(tmp_path)).scan()
         payload = json.loads(scanner.to_json())
-        assert payload["npm_dependencies"] == ["@mcp/tools"]
+        assert set(payload) == {"dependencies", "scanned", "skipped"}
+        assert payload["dependencies"] == ["@mcp/tools"]
         assert len(payload["scanned"]) == 2
         assert payload["skipped"] == []
 
@@ -248,7 +249,9 @@ class TestNPMScannerOutput:
         _write_config(nm, "benign-pkg", BENIGN_CONFIG)
         return tmp_path
 
-    def test_rich_reports_dependencies_results_and_skips(self, tmp_path: Path) -> None:
+    def test_rich_reports_dependencies_results_and_skips(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
         """Exercises to_rich's dep table, per-result print, and skip list."""
         base = self._make(tmp_path)
         # A broken config so the "skipped" branch of to_rich is covered too.
@@ -258,6 +261,8 @@ class TestNPMScannerOutput:
         scanner = NPMScanner(base).scan()
         # to_rich renders to stdout without raising; assert it is callable.
         scanner.to_rich()
+        output = capsys.readouterr().out
+        assert "@mcp/tools" in output
         assert scanner.dependencies == ["@mcp/tools"]
         assert len(scanner.results) == 2
         assert any("bad-pkg" in str(p) for p, _ in scanner.skipped)

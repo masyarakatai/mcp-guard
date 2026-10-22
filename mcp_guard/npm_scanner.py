@@ -165,7 +165,7 @@ class NPMScanner:
     def to_json(self, indent: int = 2) -> str:
         """Aggregate report as a JSON string (deps + per-package scans + skips)."""
         payload: dict[str, Any] = {
-            "npm_dependencies": self.dependencies,
+            "dependencies": self.dependencies,
             "scanned": [to_dict(r) for r in self.results],
             "skipped": [{"path": str(p), "error": err} for p, err in self.skipped],
         }

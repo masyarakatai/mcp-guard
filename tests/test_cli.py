@@ -429,7 +429,7 @@ class TestScanNpm:
         )
         assert result.exit_code == 0
         payload = json.loads(result.output)
-        assert payload["npm_dependencies"] == ["@mcp/tools"]
+        assert payload["dependencies"] == ["@mcp/tools"]
         assert len(payload["scanned"]) == 2
         assert payload["skipped"] == []
 
@@ -451,7 +451,7 @@ class TestScanNpm:
         )
         assert result.exit_code == 0
         assert out.exists()
-        assert json.loads(out.read_text(encoding="utf-8"))["npm_dependencies"] == [
+        assert json.loads(out.read_text(encoding="utf-8"))["dependencies"] == [
             "@mcp/tools"
         ]
 

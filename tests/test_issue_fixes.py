@@ -198,6 +198,14 @@ class TestDescriptionReadVerbGate:
         assert read_only.is_write is False
         assert read_only.is_command_execution is False
 
+    def test_later_occurrence_of_same_keyword_is_not_dropped(self):
+        """#106: inspect every occurrence when a keyword is first a noun."""
+        cap = parse_tool(
+            name="history_tool",
+            description="Read the delete history. Delete the old entries.",
+        )
+        assert cap.is_destructive is True
+
     def test_rules_see_the_ungated_capability(self):
         """End to end: a read-only description leaves no HIGH finding behind."""
         manifest = MCPParser.from_dict(
@@ -312,4 +320,3 @@ class TestNullManifestFields:
         )
         result = Scanner().scan(manifest)
         assert result.manifest.name == "scanner-null-test"
-

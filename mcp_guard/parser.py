@@ -646,7 +646,7 @@ class MCPParser:
             (
                 match.start()
                 for keyword in keywords
-                if (match := _description_pattern(keyword).search(desc)) is not None
+                for match in _description_pattern(keyword).finditer(desc)
             ),
             default=-1,
         )

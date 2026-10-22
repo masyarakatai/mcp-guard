@@ -129,6 +129,20 @@ class TestObjectShapedAuthDisabling:
         assert MCPParser._detect_auth(field) is True
         assert MCPParser._detect_auth_disabled(field) is False
 
+    @pytest.mark.parametrize(
+        ("auth", "expected"),
+        [
+            ({"required": False, "enabled": True}, "enabled"),
+            ({"required": True, "enabled": False}, "disabled"),
+        ],
+    )
+    def test_enabled_flag_takes_precedence_over_required(self, auth, expected):
+        """An explicit `enabled` flag wins when it contradicts `required`."""
+        data = {"auth": auth}
+        assert _resolve(data) == expected
+        assert MCPParser._detect_auth(data) is (expected == "enabled")
+        assert MCPParser._detect_auth_disabled(data) is (expected == "disabled")
+
     def test_empty_object_stays_unknown(self):
         """An empty object says nothing; it must not become an explicit disable."""
         assert _resolve({"auth": {}}) == "unknown"

@@ -555,10 +555,16 @@ class MCPParser:
             block = cast("dict[str, Any]", value)
             if not block:
                 return "unknown"
-            # An explicit flag wins over the rest of the body, so
-            # `{"required": "false"}` is honoured like `{"required": false}`.
-            for key in ("required", "enabled"):
-                if key in block and cls._auth_value_state(block[key]) == "disabled":
+            # An explicit `enabled` flag wins over `required` when both are
+            # present, so contradictory declarations follow the documented
+            # precedence.
+            if "enabled" in block:
+                enabled_state = cls._auth_value_state(block["enabled"])
+                if enabled_state != "unknown":
+                    return enabled_state
+            if "required" in block:
+                required_state = cls._auth_value_state(block["required"])
+                if required_state == "disabled":
                     return "disabled"
             auth_type = block.get("type")
             if isinstance(auth_type, str) and auth_type.strip().lower() in _DISABLED_AUTH_VALUES:

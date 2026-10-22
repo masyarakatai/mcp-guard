@@ -2,7 +2,7 @@
 
 **Security scanner for MCP servers** — audit capabilities, detect risks, generate security reports.
 
-![CI](https://github.com/yunaremaia/mcp-guard/actions/workflows/ci.yml/badge.svg) ![Docker](https://github.com/yunaremaia/mcp-guard/actions/workflows/docker.yml/badge.svg) ![License](https://img.shields.io/github/license/yunaremaia/mcp-guard) ![Python](https://img.shields.io/badge/python-3.10%2B-blue) ![Release](https://img.shields.io/github/v/release/yunaremaia/mcp-guard)
+![CI](https://github.com/yunaremaia/mcp-guard/actions/workflows/ci.yml/badge.svg) ![Docker](https://github.com/yunaremaia/mcp-guard/actions/workflows/docker.yml/badge.svg) [![PyPI](https://img.shields.io/pypi/v/mcp-guard-py)](https://pypi.org/project/mcp-guard-py/) ![License](https://img.shields.io/github/license/yunaremaia/mcp-guard) ![Python](https://img.shields.io/badge/python-3.10%2B-blue) ![Release](https://img.shields.io/github/v/release/yunaremaia/mcp-guard)
 
 ## Why
 
